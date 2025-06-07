@@ -1,0 +1,12 @@
+# .augment-guidelines
+
+- Use Go (Golang) as the primary implementation language; generate idiomatic Go code using modules and interfaces.
+- Structure backend code according to Clean Architecture layers: domain, usecase, interface adapters, and infrastructure.
+- Apply Domain-Driven Design: define bounded contexts, aggregates, entities, and value objects in your domain.
+- Produce event-driven flows: define events with clear schemas and metadata suitable for ingestion by Event Catalog.
+- For containerization, include a multi-stage Dockerfile and Kubernetes manifests (Deployment, Service, ConfigMap, Secrets, probes).
+- Document all APIs, events, and architecture in Markdown, enriched with Mermaid diagrams (sequence, component, class).
+- Reference Event Catalog (<https://www.eventcatalog.dev/>) formats when defining events.
+- Adopt semantic versioning and Conventional Commit messages in code samples.
+- Write guidelines as a simple, clear, bullet-point list; avoid code-only or ultra-concise replies.
+- Reject outdated or anti-pattern approaches (e.g., global state, monolithic services).
