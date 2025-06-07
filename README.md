@@ -118,7 +118,7 @@ learning-event-driven/
 │   ├── module-02-clean-arch/
 │   ├── module-03-ddd/
 │   └── ...
-├── shared/                  # Shared utilities and common code
+├── pkg/                    # Shared utilities and common code
 ├── deployments/            # Kubernetes manifests and Helm charts
 ├── scripts/                # Build and deployment scripts
 ├── .github/                # GitHub Actions workflows
