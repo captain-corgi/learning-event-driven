@@ -85,7 +85,9 @@ type CreateUserRequest struct {
 // handleCreateUser handles POST /users
 func (h *UserHandler) handleCreateUser(w http.ResponseWriter, r *http.Request) {
 	var req CreateUserRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+	dec := json.NewDecoder(r.Body)
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&req); err != nil {
 		h.writeErrorResponse(w, http.StatusBadRequest, "invalid JSON body")
 		return
 	}
