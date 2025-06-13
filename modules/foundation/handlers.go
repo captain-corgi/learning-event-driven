@@ -115,7 +115,20 @@ func (h *UserHandler) handleUpdateUser(w http.ResponseWriter, r *http.Request, u
 		return
 	}
 
-	user, err := h.service.UpdateUser(userID, *req.Name, *req.Email)
+	if req.Name == nil && req.Email == nil {
+		h.writeErrorResponse(w, http.StatusBadRequest, "no fields to update")
+		return
+	}
+
+	var name, email string
+	if req.Name != nil {
+		name = *req.Name
+	}
+	if req.Email != nil {
+		email = *req.Email
+	}
+
+	user, err := h.service.UpdateUser(userID, name, email)
 	if err != nil {
 		h.handleError(w, err)
 		return
