@@ -176,7 +176,10 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 		"service": "user-service",
 		"version": "1.0.0",
 	}
-	json.NewEncoder(w).Encode(response)
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Printf("Error encoding health response: %v", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	}
 }
 
 // rootHandler handles requests to the root path
@@ -201,5 +204,8 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 			"health": "GET /health - Health check",
 		},
 	}
-	json.NewEncoder(w).Encode(response)
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Printf("Error encoding root response: %v", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	}
 }
