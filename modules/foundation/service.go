@@ -3,7 +3,9 @@ package main
 import (
 	"crypto/rand"
 	"fmt"
+	"log"
 	"sync"
+	"time"
 )
 
 // InMemoryUserService implements UserService using in-memory storage
@@ -64,17 +66,10 @@ func (s *InMemoryUserService) GetUserByID(id string) (*User, error) {
 	userCopy := *user
 	return &userCopy, nil
 }
-
-// CreateUser creates a new user
 func (s *InMemoryUserService) CreateUser(name, email string) (*User, error) {
-	// Check if email already exists
-	if err := s.checkEmailExists(email); err != nil {
-		return nil, err
-	}
-
 	user := NewUser(name, email)
 
-	// Validate the user
+	// Validate before taking the write lock (cheap)
 	if err := user.Validate(); err != nil {
 		return nil, err
 	}
@@ -82,9 +77,12 @@ func (s *InMemoryUserService) CreateUser(name, email string) (*User, error) {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
-	s.users[user.ID] = user
+	// Re-check uniqueness under the write lock
+	if err := s.checkEmailExists(email); err != nil {
+		return nil, err
+	}
 
-	// Return a copy
+	s.users[user.ID] = user
 	userCopy := *user
 	return &userCopy, nil
 }
@@ -149,7 +147,11 @@ func (s *InMemoryUserService) checkEmailExists(email string) error {
 
 // generateID generates a simple random ID for demonstration
 func generateID() string {
-	bytes := make([]byte, 8)
-	rand.Read(bytes)
-	return fmt.Sprintf("%x", bytes)
+	b := make([]byte, 8)
+	if _, err := rand.Read(b); err != nil {
+		// Fallback to timestamp-based ID; log for visibility
+		log.Printf("rand.Read failed: %v", err)
+		return fmt.Sprintf("%d", time.Now().UnixNano())
+	}
+	return fmt.Sprintf("%x", b)
 }

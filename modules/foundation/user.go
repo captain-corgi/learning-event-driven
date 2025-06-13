@@ -45,6 +45,11 @@ func NewUser(name, email string) *User {
 
 // Update updates the user's fields and timestamp
 func (u *User) Update(name, email string) {
+	// Create a temporary user to validate new values
+	temp := &User{Name: name, Email: email}
+	if err := temp.Validate(); err != nil {
+		return // or return the error
+	}
 	if name != "" {
 		u.Name = name
 	}
