@@ -103,8 +103,8 @@ func (h *UserHandler) handleCreateUser(w http.ResponseWriter, r *http.Request) {
 
 // UpdateUserRequest represents the request body for updating a user
 type UpdateUserRequest struct {
-	Name  string `json:"name,omitempty"`
-	Email string `json:"email,omitempty"`
+	Name  *string `json:"name,omitempty"`
+	Email *string `json:"email,omitempty"`
 }
 
 // handleUpdateUser handles PUT /users/{id}
@@ -115,7 +115,7 @@ func (h *UserHandler) handleUpdateUser(w http.ResponseWriter, r *http.Request, u
 		return
 	}
 
-	user, err := h.service.UpdateUser(userID, req.Name, req.Email)
+	user, err := h.service.UpdateUser(userID, *req.Name, *req.Email)
 	if err != nil {
 		h.handleError(w, err)
 		return
